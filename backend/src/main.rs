@@ -1,6 +1,7 @@
 use image::Luma;
 use qrcode::QrCode;
 use actix_web::{ post, web, App, HttpResponse, HttpServer};
+use actix_cors::Cors;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -41,9 +42,11 @@ async fn encode_wifi(wifi: web::Form<Wifi>) -> HttpResponse {
     // Save the image.
     image.save("/home/hyhuynh/qrcode.png").unwrap();
     let image_content = web::block(|| std::fs::read("/home/hyhuynh/qrcode.png")).await.unwrap().unwrap();
+
+    println!("Ok");
     
     HttpResponse::Ok()
-    .content_type("image/jpeg")
+    .content_type("image/png")
     .body(image_content)
 
 }
@@ -52,7 +55,10 @@ async fn encode_wifi(wifi: web::Form<Wifi>) -> HttpResponse {
 async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
+
+        let cors = Cors::default().allowed_origin("http://localhost:3000");
         App::new()
+            .wrap(cors)
             .service(encode_wifi)
     })
     .bind(("127.0.0.1", 8080))?
