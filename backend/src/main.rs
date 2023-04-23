@@ -45,7 +45,6 @@ async fn encode_wifi(wifi: web::Form<Wifi>) -> HttpResponse {
 
     // You can also render it into a string.
     let string = code.render().light_color(' ').dark_color('#').build();
-    println!("{}", string);
     HttpResponse::Ok()
     .content_type("image/jpeg")
     .body(image_content)
