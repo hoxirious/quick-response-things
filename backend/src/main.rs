@@ -41,10 +41,7 @@ async fn encode_wifi(wifi: web::Form<Wifi>) -> HttpResponse {
     // Save the image.
     image.save("/home/hyhuynh/qrcode.png").unwrap();
     let image_content = web::block(|| std::fs::read("/home/hyhuynh/qrcode.png")).await.unwrap().unwrap();
-
-
-    // You can also render it into a string.
-    let string = code.render().light_color(' ').dark_color('#').build();
+    
     HttpResponse::Ok()
     .content_type("image/jpeg")
     .body(image_content)
