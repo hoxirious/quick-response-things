@@ -249,6 +249,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d468802bab17cbc0cc575e9b053f41e72aa36bfa6b7f55e3529ffa43161b97fa"
 
 [[package]]
+name = "backend"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "futures",
+ "image",
+ "qrcode",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "base64"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1000,18 +1012,6 @@ checksum = "16d2f1455f3630c6e5107b4f2b94e74d76dea80736de0981fd27644216cff57f"
 dependencies = [
  "checked_int_cast",
  "image",
-]
-
-[[package]]
-name = "quick-response-thing"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "futures",
- "image",
- "qrcode",
- "serde",
- "serde_json",
 ]
 
 [[package]]
