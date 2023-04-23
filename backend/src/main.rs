@@ -1,7 +1,8 @@
 use image::Luma;
-use qrcode::QrCode;
+use qrcode::{QrCode};
 use actix_web::{ post, web, App, HttpResponse, HttpServer};
 use actix_cors::Cors;
+use std::io::{Cursor, Write, Seek, SeekFrom, Read};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -39,15 +40,26 @@ async fn encode_wifi(wifi: web::Form<Wifi>) -> HttpResponse {
 
     // Render the bits into an image.   
     let image = code.render::<Luma<u8>>().build();
-    // Save the image.
-    image.save("/home/hyhuynh/qrcode.png").unwrap();
-    let image_content = web::block(|| std::fs::read("/home/hyhuynh/qrcode.png")).await.unwrap().unwrap();
 
+    let mut writer = Cursor::new(Vec::new());
+
+    writer.write_all(&image.as_raw()).unwrap();
+    writer.seek(SeekFrom::Start(0)).unwrap();
+    
+    let mut out = Vec::new();
+    writer.read_to_end(&mut out).unwrap();
+    //writer.write_to(&mut buf, image::ImageOutputFormat::Png)?;
+    // Save the image to path.
+    image.save("/home/hyhuynh/qrcode.png").unwrap();
+
+    // Load image from path.
+    let image_content = web::block(|| std::fs::read("/home/hyhuynh/qrcode.png")).await.unwrap().unwrap();
+    println!("{:?}", image_content);
     println!("Ok");
     
     HttpResponse::Ok()
     .content_type("image/png")
-    .body(image_content)
+    .body(out)
 
 }
 
