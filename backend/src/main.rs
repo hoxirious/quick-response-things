@@ -102,7 +102,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .service(encode_wifi)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("localhost", 8000))?
     .run()
     .await
 }

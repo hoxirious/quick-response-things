@@ -1,0 +1,20 @@
+version: '3'
+services:
+  frontend:
+    build: ./frontend
+    volumes:
+      - ./frontend:/frontend
+    container_name: frontend
+    ports:
+      - 3000:3000
+    links:
+      - backend
+  backend:
+    build: ./backend
+    volumes:
+      - ./backend:/backend
+    container_name: backend
+    ports:
+      - 8000:8000
+volumes:
+  pgdata: {}
