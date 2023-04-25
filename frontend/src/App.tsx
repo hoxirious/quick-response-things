@@ -4,7 +4,7 @@ import { useState } from "react";
 import qs from "qs";
 import {Buffer} from 'buffer';
 
-const baseURL = "http://127.0.0.1:8080/encodeWifi"
+const baseURL = "http://127.0.0.1:8000/encodeWifi"
 
 interface WifiPayload {
   name: string;
@@ -26,14 +26,6 @@ function App() {
       connection_type: "WPA",
       password: passwordInput
     }
-
-    const options = {
-      method: 'POST',
-      headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: qs.stringify(payload),
-      url: baseURL,
-    }
-
     axios.post(baseURL, qs.stringify(payload), {
       responseType: "arraybuffer",
       headers: { 'content-type': 'application/x-www-form-urlencoded' },

@@ -1,0 +1,23 @@
+name: quick-response-things
+services:
+  frontend:
+    build:
+      context: frontend
+      target: development
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend/src:/code/src:ro
+
+  backend:
+    build:
+      context: backend
+      target: development
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend/src:/code/src
+      - backend-cache:/code/target
+
+volumes:
+  backend-cache: {}
