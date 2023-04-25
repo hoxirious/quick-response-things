@@ -1,20 +1,23 @@
-version: '3'
+name: quick-response-things
 services:
   frontend:
-    build: ./frontend
-    volumes:
-      - ./frontend:/frontend
-    container_name: frontend
+    build:
+      context: frontend
+      target: development
     ports:
       - 3000:3000
-    links:
-      - backend
-  backend:
-    build: ./backend
     volumes:
-      - ./backend:/backend
-    container_name: backend
+      - ./frontend/src:/code/src:ro
+
+  backend:
+    build:
+      context: backend
+      target: development
     ports:
       - 8000:8000
+    volumes:
+      - ./backend/src:/code/src
+      - backend-cache:/code/target
+
 volumes:
-  pgdata: {}
+  backend-cache: {}

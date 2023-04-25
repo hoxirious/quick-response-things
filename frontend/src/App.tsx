@@ -4,7 +4,7 @@ import { useState } from "react";
 import qs from "qs";
 import {Buffer} from 'buffer';
 
-const baseURL = "http://localhost:8000/encodeWifi"
+const baseURL = "http://127.0.0.1:8000/encodeWifi"
 
 interface WifiPayload {
   name: string;

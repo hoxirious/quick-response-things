@@ -1,38 +1,49 @@
-FROM rust:1.69 as builder
+# syntax=docker/dockerfile:1.4
+FROM rust:buster AS base
 
-RUN USER=root cargo new --bin backend
-WORKDIR /backend
-COPY ./Cargo.toml ./Cargo.toml
-RUN cargo build --release
-RUN rm src/*.rs
+ENV USER=root
+ENV ROCKET_ADDRESS=0.0.0.0
+ENV ROCKET_ENV=development
 
-ADD . ./
+WORKDIR /code
+RUN cargo init
+COPY Cargo.toml /code/Cargo.toml
+RUN cargo fetch
+COPY . /code
 
-RUN rm ./target/release/deps/backend*
-RUN cargo build --release
+FROM base AS development
 
+EXPOSE 8001
 
-FROM ubuntu
-ARG APP=/usr/src/app
+CMD [ "cargo", "run", "--offline" ]
 
-RUN apt-get update \
-    && apt-get install -y ca-certificates tzdata \
-    && rm -rf /var/lib/apt/lists/*
+FROM base AS dev-envs
 
-EXPOSE 8000
+EXPOSE 8001
+RUN <<EOF
+apt-get update
+apt-get install -y --no-install-recommends git
+EOF
 
-ENV TZ=Etc/UTC \
-    APP_USER=appuser
+RUN <<EOF
+useradd -s /bin/bash -m vscode
+groupadd docker
+usermod -aG docker vscode
+EOF
+# install Docker tools (cli, buildx, compose)
+COPY --from=gloursdocker/docker / /
+CMD [ "cargo", "run", "--offline" ]
 
-RUN groupadd $APP_USER \
-    && useradd -g $APP_USER $APP_USER \
-    && mkdir -p ${APP}
+FROM base AS builder
 
-COPY --from=builder /backend/target/release/backend ${APP}/backend
+RUN cargo build --release --offline
 
-RUN chown -R $APP_USER:$APP_USER ${APP}
+FROM debian:buster-slim
 
-USER $APP_USER
-WORKDIR ${APP}
+ENV ROCKET_ENV=production
 
-CMD ["./backend"]
+EXPOSE 8001
+
+COPY --from=builder /code/target/release/react-rust-postgres /react-rust-postgres
+
+CMD [ "/react-rust-postgres" ]
