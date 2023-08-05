@@ -1,6 +1,6 @@
 use image::{Luma, ColorType, ImageResult, EncodableLayout, ImageEncoder, codecs::png, ImageBuffer};
 use qrcode::{QrCode};
-use actix_web::{ post, web, App, HttpResponse, HttpServer};
+use actix_web::{ services, post, web, App, HttpResponse, HttpServer};
 use actix_cors::Cors;
 use std::io::{Cursor, Write, Seek};
 use serde::Deserialize;
@@ -37,6 +37,11 @@ struct Wifi {
     name: String,
     connection_type: String,
     password: String,
+}
+
+#[derive(Deserialize)]
+struct Text {
+    text: String,
 }
 
 impl Wifi {
@@ -89,6 +94,22 @@ async fn encode_wifi(wifi: web::Form<Wifi>) -> HttpResponse {
     HttpResponse::Ok()
     .content_type("image/png")
     .body(bytes)
+}
+
+#[post("/encodeText")]
+async fn encode_text(text: web::Form<Text>) -> HttpResponse {
+    
+    // Generate the QR code as png
+    let image = Wifi::generate_qr_code(text.text.clone());
+    
+    // Save the image to buffer.
+    let bytes = Wifi::save_qr_code_to_buffer(image);
+    
+    println!("Ok");
+
+    HttpResponse::Ok()
+    .content_type("image/png")
+    .body(bytes)
 
 }
 
@@ -100,7 +121,10 @@ async fn main() -> std::io::Result<()> {
         let cors = Cors::default().allow_any_origin();
         App::new()
             .wrap(cors)
-            .service(encode_wifi)
+            .service(services![
+                encode_wifi,
+                encode_text
+            ])
     })
     .bind(("0.0.0.0", 8000))?
     .run()
