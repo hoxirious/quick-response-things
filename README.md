@@ -1,7 +1,19 @@
 # quick-response-things
-- **Description:** This is a simple Rust project to help me learn the language.
-- **What does it do?** It generates a QR code from a given wifi authentication, user then can use phone to scan to connect to the wifi.
-- **Tech stack:** Rust with Actix-Web, Typescript with React
+## Description:
+- A solution addressing the issue of publicly revealing WiFi passwords
+- Encoded WiFi credentials, hyperlinks, and text with strong emphasis on security and rapid response times using
+Rust and Actix Web framework
+- Developed a user-friendly frontend using React Typescript and Tailwind CSS
+## Tech stack:
+Rust with Actix-Web, Typescript with React
 
-<img src="https://user-images.githubusercontent.com/65211251/233825287-8b441b66-b695-45f7-bbe7-7100b926dbd5.png"  width="80%" height="80%">
+## Screenshots
+![image](https://github.com/hoxirious/quick-response-things/assets/65211251/6f434d4d-b3a6-4df8-bae5-3ec41a0fcd5b)
+_Figure 1: A result example of encoding text_
+
+--- 
+![image](https://github.com/hoxirious/quick-response-things/assets/65211251/f7ddca65-5026-4e07-86c9-60b371c33f44)
+_Figure 2: A result example of encoding wifi_
+
+
 
